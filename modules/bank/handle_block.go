@@ -25,7 +25,7 @@ func (m *Module) HandleBlock(
 func (m *Module) updateSupply(height int64) error {
 	log.Debug().Str("module", "bank").Int64("height", height).Msg("updating supply")
 
-	supply, err := m.keeper.GetSupply(height)
+	supply, err := m.Keeper.GetSupply(height)
 	if err != nil {
 		return err
 	}
