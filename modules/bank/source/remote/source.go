@@ -30,20 +30,15 @@ func NewSource(source *remote.Source, bankClient banktypes.QueryClient) *Source 
 
 // GetBalances implements bankkeeper.Source
 func (s Source) GetBalances(addresses []string, height int64) ([]types.AccountBalance, error) {
-	fmt.Println("GetBalances for number of addresses: ", len(addresses))
-	counter := 1
 
 	header := remote.GetHeightRequestHeader(height)
 
 	var balances []types.AccountBalance
 	for _, address := range addresses {
-		fmt.Println("getting balance for address No. ", counter)
 		balRes, err := s.bankClient.AllBalances(s.Ctx, &banktypes.QueryAllBalancesRequest{Address: address}, header)
 		if err != nil {
 			return nil, fmt.Errorf("error while getting all balances: %s", err)
 		}
-
-		fmt.Println("balRes: ", balRes)
 
 		balances = append(balances, types.NewAccountBalance(
 			address,
@@ -51,7 +46,6 @@ func (s Source) GetBalances(addresses []string, height int64) ([]types.AccountBa
 			height,
 		))
 
-		counter += 1
 	}
 
 	return balances, nil

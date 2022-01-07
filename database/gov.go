@@ -340,7 +340,6 @@ ON CONFLICT ON CONSTRAINT unique_staking_pool_snapshot DO UPDATE SET
 	height = excluded.height
 WHERE proposal_staking_pool_snapshot.height <= excluded.height`
 
-	fmt.Println("snapshot.Pool.BondedTokens: ", snapshot.Pool.BondedTokens)
 	_, err := db.Sql.Exec(stmt,
 		snapshot.ProposalID, snapshot.Pool.BondedTokens.BigInt().String(), snapshot.Pool.NotBondedTokens.BigInt().String(), snapshot.Pool.Height)
 	if err != nil {
