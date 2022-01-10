@@ -1,12 +1,12 @@
 package types
 
-type ActionPayload struct {
-	SessionVariables map[string]interface{} `json:"session_variables"`
-	Input            Account_balancesArgs   `json:"input"`
-}
-
 type GraphQLError struct {
 	Message string `json:"message"`
+}
+
+type AccountBalancesPayload struct {
+	SessionVariables map[string]interface{} `json:"session_variables"`
+	Input            Account_balancesArgs   `json:"input"`
 }
 
 type Address struct {

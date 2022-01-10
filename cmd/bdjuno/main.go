@@ -1,31 +1,27 @@
 package main
 
 import (
-	"github.com/cosmos/cosmos-sdk/simapp"
-	"github.com/cosmos/cosmos-sdk/types/module"
 	"github.com/forbole/juno/v2/cmd"
 	initcmd "github.com/forbole/juno/v2/cmd/init"
 	parsecmd "github.com/forbole/juno/v2/cmd/parse"
-	"github.com/forbole/juno/v2/modules/messages"
 
 	actionscmd "github.com/forbole/bdjuno/v2/cmd/actions"
 	fixcmd "github.com/forbole/bdjuno/v2/cmd/fix"
 	migratecmd "github.com/forbole/bdjuno/v2/cmd/migrate"
 	parsegenesiscmd "github.com/forbole/bdjuno/v2/cmd/parse-genesis"
 
+	"github.com/forbole/bdjuno/v2/cmd/types"
 	"github.com/forbole/bdjuno/v2/types/config"
 
 	"github.com/forbole/bdjuno/v2/database"
 	"github.com/forbole/bdjuno/v2/modules"
-
-	sifchainapp "github.com/Sifchain/sifnode/app"
 )
 
 func main() {
 	parseCfg := parsecmd.NewConfig().
 		WithDBBuilder(database.Builder).
-		WithEncodingConfigBuilder(config.MakeEncodingConfig(getBasicManagers())).
-		WithRegistrar(modules.NewRegistrar(getAddressesParser()))
+		WithEncodingConfigBuilder(config.MakeEncodingConfig(types.GetBasicManagers())).
+		WithRegistrar(modules.NewRegistrar(types.GetAddressesParser()))
 
 	cfg := cmd.NewConfig("bdjuno").
 		WithParseConfig(parseCfg)
@@ -48,23 +44,4 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-}
-
-// getBasicManagers returns the various basic managers that are used to register the encoding to
-// support custom messages.
-// This should be edited by custom implementations if needed.
-func getBasicManagers() []module.BasicManager {
-	return []module.BasicManager{
-		simapp.ModuleBasics,
-		sifchainapp.ModuleBasics,
-	}
-}
-
-// getAddressesParser returns the messages parser that should be used to get the users involved in
-// a specific message.
-// This should be edited by custom implementations if needed.
-func getAddressesParser() messages.MessageAddressesParser {
-	return messages.JoinMessageParsers(
-		messages.CosmosMessageAddressesParser,
-	)
 }
