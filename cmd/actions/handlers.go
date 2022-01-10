@@ -12,6 +12,7 @@ import (
 	"github.com/forbole/bdjuno/v2/modules"
 	"github.com/forbole/bdjuno/v2/types/config"
 	"github.com/forbole/juno/v2/cmd/parse"
+	junoconfig "github.com/forbole/juno/v2/types/config"
 )
 
 func accountBalancesHandler(w http.ResponseWriter, r *http.Request) {
@@ -34,19 +35,14 @@ func accountBalancesHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	parseCfg := parse.NewConfig().
-		WithDBBuilder(database.Builder).
-		WithEncodingConfigBuilder(config.MakeEncodingConfig(types.GetBasicManagers())).
-		WithRegistrar(modules.NewRegistrar(types.GetAddressesParser()))
-
-	parseCtx, err := parse.GetParsingContext(parseCfg)
+	parseCtx, sources, err := getCtxAndSources()
 	if err != nil {
-		http.Error(w, "error while getting parsing context", http.StatusInternalServerError)
+		http.Error(w, "error while getting parsing context & sources", http.StatusInternalServerError)
 		return
 	}
 
 	// Send the request params to the Action's generated handler function
-	result, err := Account_balances(actionPayload.Input, parseCtx)
+	result, err := AccountBalances(actionPayload.Input, sources, parseCtx)
 
 	// throw if an error happens
 	if err != nil {
@@ -113,3 +109,22 @@ func accountBalancesHandler(w http.ResponseWriter, r *http.Request) {
 // 	data, _ := json.Marshal(result)
 // 	w.Write(data)
 // }
+
+func getCtxAndSources() (*parse.Context, *modules.Sources, error) {
+	parseCfg := parse.NewConfig().
+		WithDBBuilder(database.Builder).
+		WithEncodingConfigBuilder(config.MakeEncodingConfig(types.GetBasicManagers())).
+		WithRegistrar(modules.NewRegistrar(types.GetAddressesParser()))
+
+	parseCtx, err := parse.GetParsingContext(parseCfg)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	sources, err := modules.BuildSources(junoconfig.Cfg.Node, parseCtx.EncodingConfig)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	return parseCtx, sources, nil
+}

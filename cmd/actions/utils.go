@@ -8,15 +8,10 @@ import (
 	"github.com/forbole/bdjuno/v2/modules"
 	"github.com/forbole/bdjuno/v2/modules/bank"
 	"github.com/forbole/juno/v2/cmd/parse"
-	junoconfig "github.com/forbole/juno/v2/types/config"
 )
 
-func Account_balances(args actionstypes.Account_balancesArgs, parseCtx *parse.Context) (response actionstypes.Coins, err error) {
+func AccountBalances(args actionstypes.Account_balancesArgs, sources *modules.Sources, parseCtx *parse.Context) (response actionstypes.Coins, err error) {
 
-	sources, err := modules.BuildSources(junoconfig.Cfg.Node, parseCtx.EncodingConfig)
-	if err != nil {
-		return actionstypes.Coins{}, err
-	}
 	bankModule := bank.NewModule(nil, sources.BankSource, parseCtx.EncodingConfig.Marshaler, nil)
 
 	// Get latest height
