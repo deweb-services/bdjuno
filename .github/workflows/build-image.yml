@@ -3,7 +3,6 @@ name: build-image
 on:
   push:
     branches:
-      - master
       - v2/chain/deweb/testnet
       - v2/chain/deweb/mainnet
   pull_request:
@@ -17,4 +16,4 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Build the Docker image
-        run: docker build . --file Dockerfile --tag bdjuno:$(date +%s)
+        run: docker build . --file Dockerfile --tag ghcr.io/deweb-services/bdjuno:latest
