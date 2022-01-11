@@ -3,9 +3,11 @@ package main
 import (
 	"github.com/cosmos/cosmos-sdk/simapp"
 	"github.com/cosmos/cosmos-sdk/types/module"
+	ibc "github.com/cosmos/ibc-go/modules/core"
 	"github.com/desmos-labs/juno/cmd"
 	parsecmd "github.com/desmos-labs/juno/cmd/parse"
 	"github.com/desmos-labs/juno/modules/messages"
+	dewebapp "github.com/deweb-services/deweb/app"
 
 	"github.com/forbole/bdjuno/types/config"
 
@@ -37,6 +39,10 @@ func main() {
 func getBasicManagers() []module.BasicManager {
 	return []module.BasicManager{
 		simapp.ModuleBasics,
+		module.NewBasicManager(
+			ibc.AppModule{},
+		),
+		dewebapp.ModuleBasics,
 	}
 }
 
