@@ -6,6 +6,8 @@ on:
   push:
     branches:
       - master
+      - v2/chain/deweb/testnet
+      - v2/chain/deweb/mainnet
 
 jobs:
   Cleanup-runs:
